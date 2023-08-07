@@ -1,62 +1,76 @@
+-- mysql -u root < NAGN.sql
+
 DROP DATABASE IF EXISTS NAGN;
 CREATE DATABASE NAGN;
 
 USE NAGN;
 
+CREATE TABLE `users` (
+  `id` int PRIMARY KEY,
+  `username` varchar(255),
+  `password` varchar(255),
+  `email` varchar(255) UNIQUE,
+  `isAdmin` BOOLEAN,
+  `created_at` timestamp
+);
 
-Table follows {
-  following_user_id integer
-  followed_user_id integer
-  created_at timestamp 
-}
+CREATE TABLE `game_list` (
+  `id` integer PRIMARY KEY,
+  `user_id` int
+);
 
-Table users {
-  id integer [primary key]
-  username varchar
-  password varchar
-  email varchar UNIQUE
-  isAdmin BOOLEAN
-  created_at timestamp
-}
+CREATE TABLE `game_list_entries` (
+  `id` integer PRIMARY KEY,
+  `game_list_id` int,
+  `game_id` int,
+  `status` varchar(255)
+);
 
+CREATE TABLE `follows` (
+  `id` int PRIMARY KEY,
+  `id_sender` int,
+  `id_recipient` int,
+  `status` int,
+  `created_at` timestamp
+);
 
-Table posts {
-  id integer [primary key]
-  title varchar
-  body text [note: 'Content of the post']
-  user_id integer
-  status varchar
-  created_at timestamp
-}
+CREATE TABLE `messages` (
+  `id` int PRIMARY KEY,
+  `id_sender` int,
+  `id_recipient` int,
+  `message` varchar(255),
+  `time_sent` timestamp,
+  `read_status` BOOLEAN
+);
 
-Table messages {
-  id integer [primary key]
-  sender_user_id integer
-  reciever_user_id integer
-  content varchar
-  sent timestamp
-  recieved timestamp
-  read_status timestamp
-}
+CREATE TABLE `reviews` (
+  `id` integer PRIMARY KEY,
+  `user_id` integer,
+  `game_id` integer,
+  `rating` integer,
+  `review_text` varchar(255),
+  `posted_time` timestamp
+);
 
-Table game_list {
-  id integer [primary key ]
-  user_id integer
-  game_id integer
-}
+CREATE TABLE `posts` (
+  `id` int PRIMARY KEY,
+  `title` varchar(255),
+  `body` text COMMENT 'Content of the post',
+  `user_id` int,
+  `status` varchar(255),
+  `created_at` timestamp
+);
 
-Table reviews {
-  id integer [primary key]
-  user_id integer 
-  game_id integer 
-  rating integer 
-  review_text varchar 
-  posted_time timestamp 
-}
+ALTER TABLE `follows` ADD FOREIGN KEY (`id_sender`) REFERENCES `users` (`id`);
 
+ALTER TABLE `follows` ADD FOREIGN KEY (`id_recipient`) REFERENCES `users` (`id`);
 
-Ref: posts.user_id > users.id // many-to-one
+ALTER TABLE `messages` ADD FOREIGN KEY (`id_sender`) REFERENCES `users` (`id`);
 
-Ref: users.id < follows.following_user_id
+ALTER TABLE `messages` ADD FOREIGN KEY (`id_recipient`) REFERENCES `users` (`id`);
 
-Ref: users.id < follows.followed_user_id
+ALTER TABLE `reviews` ADD FOREIGN KEY (`user_id`) REFERENCES `users` (`id`);
+
+ALTER TABLE `game_list` ADD FOREIGN KEY (`user_id`) REFERENCES `users` (`id`);
+
+ALTER TABLE `game_list_entries` ADD FOREIGN KEY (`game_list_id`) REFERENCES `game_list` (`id`);
