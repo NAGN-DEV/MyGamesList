@@ -20,24 +20,26 @@ const path = require("path");
 server.use(express.static(path.join(__dirname, "build")));
 
 // here's our API
-server.use("/api", require("./api"));
+const { apiRouter } = require('./api/index');
+server.use('/api', apiRouter);
 
 // by default serve up the react app if we don't recognize the route
 server.use((req, res, next) => {
     res.sendFile(path.join(__dirname, "build", "index.html"));
 });
 server.use((error, req, res, next) => {
-    res.send(error);
+    console.error(error.stack)
+    res.status(500).send(error, 'Something Broke!');
 });
 // bring in the DB connection
-const { client } = require("./db");
+// const { client } = require("./db/client");
 
 // connect to the server
 const PORT = process.env.PORT || 4000;
 
 // define a server handle to close open tcp connection after unit tests have run
 const handle = server.listen(PORT, async () => {
-    console.log(`Server is running on ${PORT}!`);
+    console.log(`Server is running on ${PORT} 🚀`);
 });
 
 // export server and handle for routes/*.test.js

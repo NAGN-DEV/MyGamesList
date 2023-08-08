@@ -74,3 +74,18 @@ ALTER TABLE `reviews` ADD FOREIGN KEY (`user_id`) REFERENCES `users` (`id`);
 ALTER TABLE `game_list` ADD FOREIGN KEY (`user_id`) REFERENCES `users` (`id`);
 
 ALTER TABLE `game_list_entries` ADD FOREIGN KEY (`game_list_id`) REFERENCES `game_list` (`id`);
+
+INSERT INTO `users` VALUES (0,'Nas','Password01','Nas@gmail.com',True,'2023-08-01 20:00:00');
+INSERT INTO `users` VALUES (1,'Nick','Password02','Nick@gmail.com',True,'2023-08-02 21:00:00');
+INSERT INTO `users` VALUES (2,'Gabe','Password03','Gabe@gmail.com',False,'2023-08-03 22:00:00');
+INSERT INTO `users` VALUES (3,'Alec','Password04','Alec@gmail.com',False,'2023-08-04 23:00:00');
+INSERT INTO `follows` VALUES (0,0,1,0,'2023-08-08 12:00:00');
+INSERT INTO `follows` VALUES (1,1,0,0,'2023-08-08 12:00:00');
+UPDATE follows SET status = 1 WHERE id_sender = 0 AND id_recipient = 1;
+UPDATE follows SET status = 1 WHERE id_sender = 1 AND id_recipient = 0;
+INSERT INTO `follows` VALUES (2,2,3,0,'2023-08-08 12:00:00');
+INSERT INTO `follows` VALUES (3,3,2,0,'2023-08-08 12:00:00');
+UPDATE follows SET status = 1 WHERE id_sender = 2 AND id_recipient = 3;
+UPDATE follows SET status = 1 WHERE id_sender = 3 AND id_recipient = 2;
+INSERT INTO `follows` VALUES (4,0,2,0,'2023-08-08 12:00:00');
+INSERT INTO `follows` VALUES (5,1,3,0,'2023-08-08 12:00:00');

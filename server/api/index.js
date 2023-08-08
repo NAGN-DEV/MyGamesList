@@ -1,12 +1,8 @@
-const apiRouter = require("express").Router();
-const { getUserById } = require("../db/index");
-const { JWT_SECRET } = process.env;
-const jwt = require("jsonwebtoken");
+const { Router } = require('express');
+const { userRouter } = require('./user');
 
-apiRouter.get('/', (req, res, next) => {
-    res.send({
-        message: "API is under construction!",
-    });
-});
+const apiRouter = Router();
 
-module.exports = apiRouter;
+apiRouter.use('/user', userRouter);;
+
+module.exports.apiRouter = apiRouter;
