@@ -1,24 +1,48 @@
-const mysql = require('mysql')
-const util = require('util')
+const mysql = require('mysql');
+const dotenv = require('dotenv');
+const util = require('util');
+dotenv.config()
 
-const DB_HOST = 'localhost';
-const DB_USER = 'root';
-const DB_PASS = '';
-const DB_NAME = 'NAGN';
+const client = mysql.createConnection({
+    host: process.env.DB_HOST,
+    user: process.env.DB_USER,
+    password: process.env.DB_PASS,
+    database: process.env.DB_NAME,
+})
 
-const connection = mysql.createConnection({
-    host: DB_HOST,
-    user: DB_USER,
-    password: DB_PASS,
-    database: DB_NAME,
-});
+const query = util.promisify(client.query).bind(client);
 
-const query = util.promisify(connection.query).bind(connection);
-
-connection.connect(err => {
+client.connect((err) => {
     if (err) {
         console.log(err);
     } else {
-        console.log('Database connected Successfully')
+        console.log('Database connected!');
     }
-})
+});
+
+// USERS
+async function createNewUser(username, password, email, isAdmin) {
+    const result = await query(`INSERT INTO users VALUES(null, ?, ?, ?, ?, null)`,
+        [username, password, email, isAdmin])
+    return result;
+    // return getUserById(id);
+};
+
+async function getUserByUsername(username) {
+    const result = await query(`SELECT * FROM users WHERE username = ?`,
+        [username])
+    return result[0];
+};
+
+async function getUserById(id) {
+    const result = await query(`SELECT * FROM users WHERE id = ?`,
+        [id])
+    return result[0];
+};
+
+module.exports = {
+    client,
+    createNewUser,
+    getUserByUsername,
+    getUserById,
+};
