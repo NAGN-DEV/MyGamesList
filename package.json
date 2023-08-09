@@ -4,6 +4,8 @@
   "description": "A MAL clone for games",
   "main": "index.js",
   "scripts": {
+    "setup": "npm install && npm run install:client",
+    "install:client": "cd client && npm install",
     "start": "npm run build:db;  &&npm run build:client npm run build:server",
     "start:dev": "npm run build:db; npm run server:dev",
     "build:db": "mysql -u root < NAGN.sql",
